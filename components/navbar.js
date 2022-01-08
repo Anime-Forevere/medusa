@@ -1,6 +1,6 @@
 import config from "../config"
 import Image from 'next/image'
-import { signIn } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
 
 let navbar = ({session, nav}) => {
     function dropdown() {
@@ -31,7 +31,7 @@ let navbar = ({session, nav}) => {
                     <svg class="w-5 h-5 relative left-2.5 top-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>}
                 {session && 
-                <div id="dropdown" style={{display: "none"}} className="scale-95 absolute top-16 transition-all duration-300 transform right-0 w-56 mt-2 origin-top-right bg-[#111827] border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" role="menu">
+                <div id="dropdown" style={{display: "none"}} className="z-10 scale-95 absolute top-16 transition-all duration-300 transform right-0 w-56 mt-2 origin-top-right bg-[#111827] border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" role="menu">
                     <div class="px-4 py-3">         
                     <p class="text-sm leading-5 text-white">Signed in as</p>
                     <p class="text-sm font-bold leading-5 text-white truncate">{session.user.email}</p>
