@@ -1,4 +1,4 @@
 .dropdown:focus-within .dropdown-menu {
     display: "block";
     transform: translate(0) scale(1);
-  }
+}
