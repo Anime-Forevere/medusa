@@ -1,6 +1,5 @@
 import config from "../config"
 import Image from 'next/image'
-import { signIn, signOut } from "next-auth/react"
 
 let navbar = ({session, nav}) => {
     function dropdown() {
@@ -24,7 +23,7 @@ let navbar = ({session, nav}) => {
                 {nav && <li onClick={() => window.location.href = "#facts"} className="text-white text-lg font-semibold tracking-normal cursor-pointer">Facts</li>}
             </ul>
             <ul className="flex space-x-6">
-                {!session && <button onClick={() => signIn()} className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Login</button>}
+                {!session && <button onClick={() => window.location.href = "/login"} className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Login</button>}
                 {session && <button onClick={() => dropdown()} className="text-white flex" >
                     <img className="h-10 w-10 rounded-full" src={session.user.avatar} />
                     <text className="relative left-2 top-2">{session.user.name}</text>
