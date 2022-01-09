@@ -1,12 +1,10 @@
 import config from "../config";
 import Head from "next/head"
-import { getProviders, signIn, getCsrfToken } from "next-auth/react"
+import {providers} from "../config"
+import signIn from "../lib/signIn"
 
 let Login = ({props}) => {
-    let csrfToken = props.csrfToken
-    let query = props.query
-    let providers = props.providers
-    if(config.providers.email.enabled) delete providers.email
+    if(providers.email) delete providers.email
     return (
         <section className="min-h-screen flex items-stretch text-white ">
             <Head>
@@ -28,7 +26,7 @@ let Login = ({props}) => {
                         {config.name}
                     </h1>
                     <h1 className="text-10 text-red-500">
-                        {query?.error ? query?.error : undefined}
+                        {/*query?.error ? query?.error : undefined*/}
                     </h1>
                     <div className="py-6 space-x-2">
                         {Object.values(providers).map((provider) => (
@@ -39,7 +37,6 @@ let Login = ({props}) => {
                         or use email
                     </p>
                     <form action="/api/auth/signin/email" method="POST" className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
-                        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                         <div className="pb-2 pt-4">
                             <input type="email" name="email" id="email" placeholder="Email" className="block w-full p-4 text-lg rounded-sm bg-black" />
                         </div>
@@ -56,12 +53,11 @@ let Login = ({props}) => {
 
 
 Login.getInitialProps = async({req, res, query}) => {
-    const csrfToken = await getCsrfToken(req)
-    let token = req.cookies["next-auth.session-token"]
+    let token = req.cookies["session-token"]
     if(!req?.session && token) {
         let session = await fetch("http://localhost:3000/api/auth/session", {
             headers: {
-                cookie: `next-auth.session-token=${token}`
+                cookie: `session-token=${token}`
             }
         }).then(res => res.json())
         req["session"] = session
@@ -72,8 +68,7 @@ Login.getInitialProps = async({req, res, query}) => {
         });
         res.end();
     }
-    const providers = await getProviders()
-    return {props: {csrfToken, providers, query}}
+    return {props: {}}
 }
 
 
