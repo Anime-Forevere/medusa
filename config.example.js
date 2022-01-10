@@ -36,9 +36,9 @@ module.exports = {
     },
 
     resources: {
-        "cpu": 100,
-        "ram": 2048,
-        "disk": 1024 * 10,
+        "cpu": 100, // % of CPU given to user as default
+        "ram": 2048, // MB of RAM given to user as default
+        "disk": 1024 * 10, // MB of Disk Space given to user as default
         "slots": 2
     }
 }

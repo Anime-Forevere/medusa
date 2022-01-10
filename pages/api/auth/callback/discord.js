@@ -1,9 +1,12 @@
 import config from "../../../../config"
 import db from "../../../../lib/db"
 import User from "../../../../schemas/User"
-import { URLSearchParams } from 'url'
+import {
+    URLSearchParams
+} from 'url'
+import Session from "../../../../schemas/Session"
 
-export default async function handler (req, res) {
+export default async function handler(req, res) {
     let code = req.query.code
     const params = new URLSearchParams();
     params.append('client_id', config.providers.discord.client_id);
@@ -15,7 +18,10 @@ export default async function handler (req, res) {
     let auth = await fetch(`https://discord.com/api/oauth2/token`, {
         method: "POST",
         body: params,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+        },
     }).then(res => res.json())
     code = auth["access_token"]
     let info = await fetch(`https://discord.com/api/v9/users/@me`, {
@@ -23,16 +29,55 @@ export default async function handler (req, res) {
             Authorization: `Bearer ${code}`
         }
     }).then(res => res.json())
-    return res.status(200).send(info)
     await db()
-    let user = await User.findOne({id: info.id})
-    if(!user || user === null) {
-        User.create({
+    let user = await User.findOne({
+        id: info.id
+    })
+    if (!user || user === null) {
+        user = await User.create({
             id: info.id,
             email: info.email,
             avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.xyna.space/r/discord.png`
         })
-    } else {
-        
     }
+    let session = await Session.findOne({
+        id: info.id
+    })
+    let expired = false;
+    if (session.created) {
+        if (session.created + 604800000 < Date.now()) expired = true
+    }
+    if (!session || session === null || expired) {
+        if (expired) {
+            await Session.deleteOne({
+                session: session.session
+            })
+        }
+        let string = generateSession(32)
+        session = await Session.create({
+            session: string,
+            id: info.id,
+            created: Date.now()
+        })
+    }
+    setCookies('session', session.id, { req, res, maxAge: 60 * 60 * 24 * 7 });
+    res.writeHead(307, {
+        Location: '/dashboard'
+    });
+    res.end();
+}
+
+async function generateSession(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    let session = await Session.findOne({
+        session: result
+    })
+    if (session !== null || session) return await generateSession(length)
+    return result;
 }

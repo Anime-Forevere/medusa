@@ -8,6 +8,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "cookies-next": "^2.0.3",
     "mongoose": "^6.1.5",
     "next": "12.0.7",
     "nodemailer": "^6.7.2",
