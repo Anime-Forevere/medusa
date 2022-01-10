@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const UserSchema = new mongoose.Schema({
+const SessionSchema = new mongoose.Schema({
     session: {
         type: String,
         required: true,
@@ -10,4 +10,4 @@ const UserSchema = new mongoose.Schema({
     created: Number
   })
   
-  module.exports = mongoose.models.User || mongoose.model('User', UserSchema)
+  module.exports = mongoose.models.Session || mongoose.model('Session', SessionSchema)

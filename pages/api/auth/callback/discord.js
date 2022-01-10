@@ -5,6 +5,7 @@ import {
     URLSearchParams
 } from 'url'
 import Session from "../../../../schemas/Session"
+import { setCookies } from 'cookies-next';
 
 export default async function handler(req, res) {
     let code = req.query.code
@@ -23,6 +24,12 @@ export default async function handler(req, res) {
             'Accept': 'application/json'
         },
     }).then(res => res.json())
+    if(auth.error === "invalid_request") {
+        res.writeHead(307, {
+            Location: '/login?error=expiredcode'
+        });
+        return res.end();
+    }
     code = auth["access_token"]
     let info = await fetch(`https://discord.com/api/v9/users/@me`, {
         headers: {
@@ -36,6 +43,7 @@ export default async function handler(req, res) {
     if (!user || user === null) {
         user = await User.create({
             id: info.id,
+            name: info.username,
             email: info.email,
             avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.xyna.space/r/discord.png`
         })
@@ -44,7 +52,7 @@ export default async function handler(req, res) {
         id: info.id
     })
     let expired = false;
-    if (session.created) {
+    if (session?.created) {
         if (session.created + 604800000 < Date.now()) expired = true
     }
     if (!session || session === null || expired) {
@@ -64,7 +72,7 @@ export default async function handler(req, res) {
     res.writeHead(307, {
         Location: '/dashboard'
     });
-    res.end();
+    return res.end();
 }
 
 async function generateSession(length) {
