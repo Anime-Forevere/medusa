@@ -7,14 +7,14 @@ import Session from "../schemas/Session"
 import { getCookie } from 'cookies-next';
 
 let page = ({props}) => {
-    let session = props
+    let user = props
     return (
         <div className="bg-[#212f4d]">
             <Head>
                 <script src="https://kit.fontawesome.com/e8588d4c11.js" crossOrigin="anonymous" />
             </Head>
             <div>
-                <Navbar session={session} nav={false} />
+                <Navbar user={user} nav={false} />
                 <div className="absolute left-48">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
                     <div class="w-96 bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
@@ -80,14 +80,24 @@ let page = ({props}) => {
 }
 
 page.getInitialProps = async({req, res, query}) => {
-    let id = getCookie('session', { req, res})
+    let id = getCookie('session', { req, res })
     if(!id) {
         res.writeHead(307, {
             Location: '/login'
         });
-        res.end();
+        return res.end();
     }
-    
+    await db()
+    let session = await Session.findOne({id})
+    if (session.created + 604800000 < Date.now()) {
+        await Session.deleteOne({id})
+        res.writeHead(307, {
+            Location: '/login?error=expiredsession'
+        });
+        return res.end();
+    }
+    let user = await User.findOne({id})
+    return {props: user}
 }
 
 export default page

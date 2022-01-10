@@ -4,6 +4,7 @@ import {providers} from "../config"
 import signIn from "../lib/signIn"
 
 let Login = ({props}) => {
+    let query = props
     if(providers.email) delete providers.email
     return (
         <section className="min-h-screen flex items-stretch text-white ">
@@ -26,7 +27,7 @@ let Login = ({props}) => {
                         {config.name}
                     </h1>
                     <h1 className="text-10 text-red-500">
-                        {/*query?.error ? query?.error : undefined*/}
+                        {query?.error ? query?.error : undefined}
                     </h1>
                     <div className="py-6 space-x-2">
                         {Object.values(providers).map((provider) => (
@@ -68,7 +69,7 @@ Login.getInitialProps = async({req, res, query}) => {
         });
         res.end();
     }
-    return {props: {}}
+    return {props: query}
 }
 
 
