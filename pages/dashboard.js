@@ -1,6 +1,10 @@
 import Head from "next/head"
 import Navbar from "../components/navbar"
 import styles from "../styles/dashboard.module.css"
+import db from "../lib/db"
+import User from "../schemas/User"
+import Session from "../schemas/Session"
+import { getCookie } from 'cookies-next';
 
 let page = ({props}) => {
     let session = props
@@ -75,24 +79,15 @@ let page = ({props}) => {
     )
 }
 
-page.getInitialProps = async ({ req, res, query }) => {
-    let token = req.cookies["next-auth.session-token"]
-    let session = {};
-    if (!req?.session && token) {
-        session = await fetch("http://localhost:3000/api/auth/session", {
-            headers: {
-                cookie: `next-auth.session-token=${token}`
-            }
-        }).then(res => res.json())
-        req["session"] = session
-        return {props: session }
-    }
-    if (!req.session) {
+page.getInitialProps = async({req, res, query}) => {
+    let id = getCookie('session', { req, res})
+    if(!id) {
         res.writeHead(307, {
             Location: '/login'
         });
         res.end();
     }
+    
 }
 
 export default page
