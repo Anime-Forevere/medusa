@@ -61,14 +61,14 @@ export default async function handler(req, res) {
                 session: session.session
             })
         }
-        let string = generateSession(32)
+        let string = await generateSession(32)
         session = await Session.create({
             session: string,
             id: info.id,
             created: Date.now()
         })
     }
-    setCookies('session', session.id, { req, res, maxAge: 60 * 60 * 24 * 7 });
+    setCookies('session', session.session, { req, res, maxAge: 60 * 60 * 24 * 7 });
     res.writeHead(307, {
         Location: '/dashboard'
     });

@@ -10,4 +10,4 @@ const SessionSchema = new mongoose.Schema({
     created: Number
   })
   
-  module.exports = mongoose.models.Session || mongoose.model('Session', SessionSchema)
+  module.exports = mongoose?.models?.Session || mongoose.model('Session', SessionSchema)
