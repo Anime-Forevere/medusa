@@ -5,6 +5,8 @@ import signIn from "../lib/signIn"
 
 let Login = ({props}) => {
     let query = props
+    if(!providers.discord.enabled) delete providers.discord
+    if(!providers.google.enabled) delete providers.email
     if(providers.email) delete providers.email
     return (
         <section className="min-h-screen flex items-stretch text-white ">

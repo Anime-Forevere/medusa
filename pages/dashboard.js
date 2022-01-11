@@ -80,15 +80,15 @@ let page = ({props}) => {
 }
 
 page.getInitialProps = async({req, res, query}) => {
-    let id = getCookie('session', { req, res })
-    if(!id) {
+    let session = getCookie('session', { req, res })
+    if(!session) {
         res.writeHead(307, {
             Location: '/login'
         });
         return res.end();
     }
     await db()
-    let session = await Session.findOne({id})
+    session = await Session.findOne({session})
     if (session.created + 604800000 < Date.now()) {
         await Session.deleteOne({id})
         res.writeHead(307, {
@@ -96,7 +96,7 @@ page.getInitialProps = async({req, res, query}) => {
         });
         return res.end();
     }
-    let user = await User.findOne({id})
+    let user = await User.findOne({id: session.id})
     return {props: user}
 }
 
