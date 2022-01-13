@@ -45,7 +45,13 @@ export default async function handler(req, res) {
             id: info.id,
             name: info.username,
             email: info.email,
-            avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.xyna.space/r/discord.png`
+            avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${info.discriminator % 5}.png`
+        })
+    } else {
+        user = await User.updateOne({id: info.id}, {
+            name: info.username,
+            email: info.email,
+            avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${info.discriminator % 5}.png`
         })
     }
     let session = await Session.findOne({

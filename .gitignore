@@ -11,6 +11,7 @@ package-lock.json
 
 # useless
 .vscode
+.github
 
 # next.js
 /.next/

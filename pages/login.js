@@ -2,12 +2,22 @@ import config from "../config";
 import Head from "next/head"
 import {providers} from "../config"
 import signIn from "../lib/signIn"
+import { getCookie } from 'cookies-next';
+import Session from "../schemas/Session"
 
 let Login = ({props}) => {
     let query = props
-    if(!providers.discord.enabled) delete providers.discord
-    if(!providers.google.enabled) delete providers.email
-    if(providers.email) delete providers.email
+    if(query.error) {
+        switch(query.error) {
+            case "expiredsession":
+                query["error"] = "Your session expired. Login again."
+            default:
+                query["error"] = "Unknown error."
+        }
+    }
+    let prvds = {};
+    if(providers.discord.enabled === true) prvds["discord"] = providers["discord"]
+    if(providers.google.enabled === true) prvds["google"] = providers["google"]
     return (
         <section className="min-h-screen flex items-stretch text-white ">
             <Head>
@@ -32,21 +42,21 @@ let Login = ({props}) => {
                         {query?.error ? query?.error : undefined}
                     </h1>
                     <div className="py-6 space-x-2">
-                        {Object.values(providers).map((provider) => (
+                        {Object.values(prvds).map((provider) => (
                             <span onClick={() => signIn(provider.id)} className={"fab fa-" + provider.id + " w-10 h-10 items-center justify-center inline-flex rounded-full font-bold text-lg border-2 border-white cursor-pointer"} />
                         ))}
                     </div>
-                    <p className="text-gray-100">
+                    {providers?.email?.enabled && <p className="text-gray-100">
                         or use email
-                    </p>
-                    <form action="/api/auth/signin/email" method="POST" className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
+                    </p>}
+                    {providers?.email?.enabled && <form action="/api/auth/signin/email" method="POST" className="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
                         <div className="pb-2 pt-4">
                             <input type="email" name="email" id="email" placeholder="Email" className="block w-full p-4 text-lg rounded-sm bg-black" />
                         </div>
                         <div className="px-4 pb-2 pt-4">
                             <button type="submit" className="uppercase block w-full p-4 text-lg rounded-full bg-indigo-500 hover:bg-indigo-600 focus:outline-none">sign in</button>
                         </div>
-                    </form>
+                    </form>}
                 </div>
             </div>
         </section>
@@ -56,16 +66,9 @@ let Login = ({props}) => {
 
 
 Login.getInitialProps = async({req, res, query}) => {
-    let token = req.cookies["session-token"]
-    if(!req?.session && token) {
-        let session = await fetch("http://localhost:3000/api/auth/session", {
-            headers: {
-                cookie: `session-token=${token}`
-            }
-        }).then(res => res.json())
-        req["session"] = session
-    }
-    if(req.session) {
+    let session = getCookie(`session`, {req,res})
+    session = await Session.findOne({session})
+    if(session?.created) {
         res.writeHead(307, {
             Location: '/dashboard'
         });

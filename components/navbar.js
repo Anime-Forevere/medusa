@@ -1,5 +1,6 @@
 import config from "../config"
 import Image from 'next/image'
+import signOut from "../lib/signOut"
 
 let navbar = ({user, nav}) => {
     function dropdown() {

@@ -20,8 +20,8 @@ export default async function handler (req, res) {
             let body = req.body
             if(!body.id || !body.email) return res.status(400).send({error: `You forgot to include ID or Email.`})
             if(isNaN(body.id)) return res.status(400).send({error: `ID of user is Not A Number.`})
-            return res.status(200).send({id: req.body.id})
+            return res.status(201).send({id: req.body.id})
         default:
-            return res.status(400).send({error: `GET or POST methods are available for this URL.`})
+            return res.status(405).send({error: `GET or POST methods are available for this URL.`})
     }
 }
