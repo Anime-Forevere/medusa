@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
         ram: Number,
         disk: Number,
         slots: Number
-    }
+    },
+    password: String,
   })
   
   module.exports = mongoose?.models?.User || mongoose.model('User', UserSchema)

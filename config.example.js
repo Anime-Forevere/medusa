@@ -21,6 +21,7 @@ module.exports = {
             client_secret: ""
         },
         google: {
+            // Google is not made yet so not recommended to use
             // Same with google
             // Redirect URI: domain.com/google
             enabled: false,
@@ -29,6 +30,7 @@ module.exports = {
             client_secret: ""
         },
         email: {
+            // Email is not made yet so not recommended to use
             enabled: true,
             // You can use your own SMTP server or gmail's one.
             // Gmail is recommended one though
@@ -38,9 +40,9 @@ module.exports = {
     },
 
     resources: {
-        "cpu": 100, // % of CPU given to user as default
-        "ram": 2048, // MB of RAM given to user as default
-        "disk": 1024 * 10, // MB of Disk Space given to user as default
-        "slots": 2
+        cpu: 100, // % of CPU given to user as default
+        ram: 2048, // MB of RAM given to user as default
+        disk: 1024 * 10, // MB of Disk Space given to user as default
+        slots: 2
     }
 }

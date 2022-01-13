@@ -11,15 +11,10 @@ export default async function handler(req, res) {
         });
         return res.end();
     }
-    let data = await fetch(`https://oauth2.googleapis.com/token?grant_type=authorization_code&code=${req.query.access_token}&client_id=${config.providers.google.client_id}&client_secret=${config.providers.google.client_secret}&redirect_uri=${config.domain}/google`, {
+    
+    let data = await fetch(`https://oauth2.googleapis.com/token?code=${req.query.access_token}&client_id=${config.providers.google.client_id}&client_secret=${config.providers.google.client_secret}&grant_type=authorization_code`, {
         method: "POST"
     }).then(res => res.json())
     console.log(data)
-    res.status(200).send({
-        code: req.query.access_token,
-        client_id: config.providers.google.client_id,
-        client_secret: config.providers.google.client_secret,
-        redirect_uri: `${config.domain}/google`,
-        grant_type: "authorization_code"
-    })
+    res.status(200).send(data)
 }
