@@ -45,7 +45,19 @@ export default async function handler(req, res) {
             id: info.id,
             name: info.username,
             email: info.email,
-            avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${info.discriminator % 5}.png`
+            avatar: info.avatar ? `https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/${info.discriminator % 5}.png`,
+            resources: {
+                cpu: config.resources.cpu,
+                ram: config.resources.ram,
+                disk: config.resources.disk,
+                slots: config.resources.slots
+            },
+            used: {
+                cpu: 0,
+                ram: 0,
+                disk: 0,
+                slots: 0
+            }
         })
     } else {
         user = await User.updateOne({id: info.id}, {
