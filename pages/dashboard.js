@@ -143,6 +143,7 @@ page.getInitialProps = async({req, res, query}) => {
     }
     await db()
     session = await Session.findOne({session})
+<<<<<<< Updated upstream
     if(!session?.created) {
         res.writeHead(307, {
             Location: '/login'
@@ -150,6 +151,9 @@ page.getInitialProps = async({req, res, query}) => {
         return res.end();
     }
     if (session?.created + 604800000 < Date.now()) {
+=======
+    if (session.created + 604800000 < Date.now()) {
+>>>>>>> Stashed changes
         await Session.deleteOne({id})
         res.writeHead(307, {
             Location: '/login?error=expiredsession'
@@ -157,6 +161,7 @@ page.getInitialProps = async({req, res, query}) => {
         return res.end();
     }
     let user = await User.findOne({id: session.id})
+<<<<<<< Updated upstream
     if(!user?.email) {
         res.writeHead(307, {
             Location: '/login'
@@ -181,6 +186,9 @@ page.getInitialProps = async({req, res, query}) => {
     let password = true
     if(!user?.password) password = false 
     return {props: {user, password}}
+=======
+    return {props: user}
+>>>>>>> Stashed changes
 }
 
 export default page

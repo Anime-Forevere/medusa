@@ -7,6 +7,7 @@ import Session from "../schemas/Session"
 
 let Login = ({props}) => {
     let query = props
+<<<<<<< Updated upstream
     if(query.error) {
         switch(query.error) {
             case "expiredsession":
@@ -18,6 +19,11 @@ let Login = ({props}) => {
     let prvds = {};
     if(providers.discord.enabled === true) prvds["discord"] = providers["discord"]
     if(providers.google.enabled === true) prvds["google"] = providers["google"]
+=======
+    if(!providers.discord.enabled) delete providers.discord
+    if(!providers.google.enabled) delete providers.email
+    if(providers.email) delete providers.email
+>>>>>>> Stashed changes
     return (
         <section className="min-h-screen flex items-stretch text-white ">
             <Head>
