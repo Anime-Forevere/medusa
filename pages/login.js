@@ -1,9 +1,9 @@
 import config from "../config";
-import Head from "next/head"
 import {providers} from "../config"
 import signIn from "../lib/signIn"
 import { getCookie } from 'cookies-next';
 import Session from "../schemas/Session"
+import { SiDiscord } from "react-icons/si";
 
 let Login = ({props}) => {
     let query = props
@@ -15,14 +15,9 @@ let Login = ({props}) => {
                 query["error"] = "Unknown error."
         }
     }
-    let prvds = {};
-    if(providers.discord.enabled === true) prvds["discord"] = providers["discord"]
-    if(providers.google.enabled === true) prvds["google"] = providers["google"]
     return (
         <section className="min-h-screen flex items-stretch text-white ">
-            <Head>
-                <script src="https://kit.fontawesome.com/e8588d4c11.js" crossOrigin="anonymous" />
-            </Head>
+            
             <div className="lg:flex w-1/2 hidden bg-gray-500 bg-no-repeat bg-cover relative items-center" style={{backgroundImage: "url(https://images.unsplash.com/photo-1577495508048-b635879837f1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80)"}}>
                 <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
                 <div className="w-full px-24 z-10">
@@ -42,9 +37,7 @@ let Login = ({props}) => {
                         {query?.error ? query?.error : undefined}
                     </h1>
                     <div className="py-6 space-x-2">
-                        {Object.values(prvds).map((provider) => (
-                            <span onClick={() => signIn(provider.id)} className={"fab fa-" + provider.id + " w-10 h-10 items-center justify-center inline-flex rounded-full font-bold text-lg border-2 border-white cursor-pointer"} />
-                        ))}
+                        <span onClick={() => signIn("discord")} className={"w-10 h-10 items-center justify-center inline-flex rounded-full font-bold text-lg border-2 border-white cursor-pointer"}><SiDiscord size={24} /></span>
                     </div>
                     {providers?.email?.enabled && <p className="text-gray-100">
                         or use email
@@ -68,7 +61,7 @@ let Login = ({props}) => {
 Login.getInitialProps = async({req, res, query}) => {
     let session = getCookie(`session`, {req,res})
     session = await Session.findOne({session})
-    if(session?.created) {
+    if(session) {
         res.writeHead(307, {
             Location: '/dashboard'
         });

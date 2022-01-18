@@ -1,4 +1,3 @@
-import Head from "next/head"
 import Navbar from "../components/navbar"
 import styles from "../styles/dashboard.module.css"
 import config from "../config"
@@ -8,6 +7,9 @@ import Session from "../schemas/Session"
 import SweetAlert from "react-bootstrap-sweetalert";
 import { getCookie } from 'cookies-next';
 import React from "react"
+import { BsFillCpuFill, BsServer } from "react-icons/bs";
+import { FaMemory } from "react-icons/fa";
+import { RiHardDrive2Fill } from "react-icons/ri";
 
 let page = ({props}) => {
     let user = props.user
@@ -36,7 +38,7 @@ let page = ({props}) => {
                 text.innerText = ""
             }, 5000)
         }
-        let res = await fetch(`${config.domain}/api/auth/password?password=${password}`, {
+        let res = await fetch(`/api/auth/password?password=${password}`, {
             method: "POST",
         })
         console.log(res)
@@ -64,44 +66,33 @@ let page = ({props}) => {
                     <input style={{display: "table", margin: "auto", color: "white", border: "none", backgroundColor: "#27274e"}} id="newPassword" type="password" name="password" placeholder="Password" class="py-2 px-3 border w-96 border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block" />
                 </div>
                 </SweetAlert>}
-            <Head>
-                <script src="https://kit.fontawesome.com/e8588d4c11.js" crossOrigin="anonymous" />
-            </Head>
             <div>
                 <Navbar user={user} nav={false} />
                 <div className="absolute left-48">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
-                    <div class="2xl:w-96 bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
-                        <div class="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
-                            <i className="" />
-                        </div>
+                <div class="sm:grid block grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4">
+                    <div style={{width: "20vw"}} class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                        <BsFillCpuFill size={64} />
                         <div class="text-right">
                             <p class="text-2xl">{user.used.cpu}/{user.resources.cpu}%</p>
                             <p>CPU</p>
                         </div>
                     </div>
-                    <div class="2xl:w-96 bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
-                        <div class="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
-                            <i className="" />
-                        </div>
+                    <div style={{width: "20vw"}} class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                        <FaMemory size={64} />
                         <div class="text-right">
                             <p class="text-2xl">{user.used.ram}/{user.resources.ram} MB</p>
                             <p>Memory (RAM)</p>
                         </div>
                     </div>
-                    <div class="2xl:w-96 bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
-                        <div class="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
-                            <i className="" />
-                        </div>
+                    <div style={{width: "20vw"}} class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                        < RiHardDrive2Fill size={64} />
                         <div class="text-right">
                             <p class="text-2xl">{user.used.disk}/{user.resources.disk} MB</p>
                             <p>Disk Space</p>
                         </div>
                     </div>
-                    <div class="2xl:w-96 bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
-                        <div class="flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12">
-                            <i className="" />
-                        </div>
+                    <div style={{width: "20vw"}} class="bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group">
+                        <BsServer size={64} />
                         <div class="text-right">
                             <p class="text-2xl">{user.used.slots}/{user.resources.slots} servers</p>
                             <p>Slots</p>
@@ -162,21 +153,6 @@ page.getInitialProps = async({req, res, query}) => {
             Location: '/login'
         });
         return res.end();
-    }
-    if(!user?.resources.cpu || !user?.used.cpu) {
-        await User.updateOne({id: session.id}, {resources: {
-            cpu: config.resources.cpu,
-            ram: config.resources.ram,
-            disk: config.resources.disk,
-            slots: config.resources.slots
-        },
-        used: {
-            cpu: 0,
-            ram: 0,
-            disk: 0,
-            slots: 0
-        }})
-        user = await User.findOne({id: session.id})
     }
     let password = true
     if(!user?.password) password = false 
