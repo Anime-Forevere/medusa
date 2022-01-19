@@ -1,3 +1,23 @@
-.navbut:hover {
+.sidebut:hover {
     background-color: #212f4d !important;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #212f4d !important;
+}
+
+.sidebar {
+    width: 5rem;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 93vh;
+}
+
+.opensidebar {
+    width: 12rem;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 93vh;
 }
